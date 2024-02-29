@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:redprix_api/module/utils/helper/api_helper.dart';
+import 'package:http/http.dart' as http;
 
 class singup extends StatefulWidget {
   singup({super.key});
@@ -27,6 +28,7 @@ class _singupState extends State<singup> {
   String? state;
   List citylist = ["1041"];
   String? city;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,22 +279,35 @@ class _singupState extends State<singup> {
                                 email: email!,
                                 password: password!,
                                 cpassword: cpassword!,
-                                city: city!,
                                 country: country!,
                                 state: state!,
+                                city: city!,
                               );
+
                               log("${res}");
-                              if (res == 200) {
-                                Get.toNamed('/home');
+                              if (res == 201) {
+                                Get.toNamed('/otp');
+                                Get.snackbar("signup", "successfully");
                                 Fluttertoast.showToast(
                                   msg: "Login",
                                 );
                               } else {
+                                Get.snackbar("signup", "failed",
+                                    backgroundColor: Colors.red);
                                 Fluttertoast.showToast(
                                   msg: "login failed",
                                 );
+                                log("$name");
+                                log("$email");
+                                log("$password");
+                                log("$cpassword");
+                                log("$city");
+                                log("$state");
+                                log("$country");
                               }
                             } else {
+                              Get.snackbar("password", "enter valid password",
+                                  backgroundColor: Colors.red);
                               Fluttertoast.showToast(
                                 msg: "Enter valid password.",
                               );

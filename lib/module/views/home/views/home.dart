@@ -1,9 +1,18 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:redprix_api/module/utils/helper/api_helper.dart';
+import 'package:http/http.dart' as http;
 
-class home extends StatelessWidget {
+class home extends StatefulWidget {
   const home({super.key});
 
+  @override
+  State<home> createState() => _homeState();
+}
+
+class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

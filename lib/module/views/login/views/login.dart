@@ -26,10 +26,11 @@ class _loginState extends State<login> {
             width: Get.width,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(
-                    "https://img.freepik.com/free-photo/medium-shot-man-taking-selfie-with-food_23-2149155170.jpg",
-                  ),
-                  fit: BoxFit.cover),
+                image: NetworkImage(
+                  "https://img.freepik.com/free-photo/medium-shot-man-taking-selfie-with-food_23-2149155170.jpg",
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SingleChildScrollView(
@@ -40,7 +41,7 @@ class _loginState extends State<login> {
                   height: Get.height * 0.08,
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 40),
+                  padding: EdgeInsets.only(left: 20),
                   child: Text(
                     "Sign up",
                     style: TextStyle(
@@ -51,17 +52,18 @@ class _loginState extends State<login> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 40),
+                  padding: EdgeInsets.only(left: 20),
                   child: Text(
                     "Welcome to Redprix",
                     style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 40),
+                  padding: EdgeInsets.only(left: 20),
                   child: Text(
                     "Sign up to connect to with our app",
                     style: TextStyle(fontSize: 14, color: Colors.white),
@@ -91,14 +93,14 @@ class _loginState extends State<login> {
                         ),
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(left: 40),
+                        padding: EdgeInsets.only(left: 20),
                         child: Text(
                           "Email Id",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40, right: 40),
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         child: TextFormField(
                           onChanged: (val) {
                             email = val;
@@ -110,14 +112,14 @@ class _loginState extends State<login> {
                         ),
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(left: 40),
+                        padding: EdgeInsets.only(left: 20),
                         child: Text(
                           "Password",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40, right: 40),
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         child: TextFormField(
                           onChanged: (val) {
                             password = val;
@@ -142,7 +144,7 @@ class _loginState extends State<login> {
                       const Align(
                         alignment: AlignmentDirectional.centerEnd,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 40),
+                          padding: EdgeInsets.only(right: 20),
                           child: Text(
                             "Forgot password?",
                             style: TextStyle(color: Colors.blue),
@@ -156,12 +158,15 @@ class _loginState extends State<login> {
                         onTap: () async {
                           var res = await Apihelper.apihelper
                               .loginapi(email: email!, password: password!);
+
                           if (res == 200) {
                             Get.toNamed("/home");
+                            Get.snackbar("Login", "successfully");
                             Fluttertoast.showToast(
                               msg: "Login",
                             );
                           } else {
+                            Get.snackbar("Login", "failed");
                             Fluttertoast.showToast(
                               msg: "Login failed",
                             );
@@ -169,7 +174,7 @@ class _loginState extends State<login> {
                           }
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(left: 40, right: 40),
+                          margin: const EdgeInsets.only(left: 20, right: 20),
                           height: 50,
                           width: Get.width,
                           decoration: BoxDecoration(

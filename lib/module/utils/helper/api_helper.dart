@@ -8,8 +8,46 @@ class Apihelper {
 
   static final Apihelper apihelper = Apihelper._();
 
-  Future<Object> loginapi(
-      {required String email, required String password}) async {
+  Future singupapi({
+    required String name,
+    required String email,
+    required String password,
+    required String cpassword,
+    required String country,
+    required String state,
+    required String city,
+  }) async {
+    log("$name");
+    log("$email");
+    log("$password");
+    log("$cpassword");
+    log("$country");
+    log("$state");
+    log("$city");
+    http.Response response = await http.post(
+      Uri.parse("https://uat.redprix.com/api/customers/customers"),
+      body: {
+        "name": "dilipbarad",
+        "email": "dilipsinh@gmail.com",
+        "password": "12345678",
+        "confirm_password": "12345678",
+        "country_id": "101",
+        "state_id": "12",
+        "city_id": "1041",
+      },
+      headers: {"Accept": "application/json"},
+    );
+
+    if (response.statusCode == 201) {
+      print("${response.body}");
+      return response.statusCode;
+    } else {
+      print("${response.statusCode}");
+      return response.statusCode;
+    }
+  }
+
+  Future loginapi({required String email, required String password}) async {
     http.Response response = await http.post(
         Uri.parse("https://uat.redprix.com/api/login"),
         body: {"email": email, "password": password});
@@ -22,38 +60,12 @@ class Apihelper {
     }
   }
 
-  Future<Object> singupapi({
-    required String name,
-    required String email,
-    required String password,
-    required String cpassword,
-    required String country,
-    required String state,
-    required String city,
-  }) async {
-    http.Response response = await http
-        .post(Uri.parse("https://redprix.com/api/customers/customers"), body: {
-      "name": name,
-      "email": email,
-      "password": password,
-      "confirm_password": cpassword,
-      "country_id": country,
-      "state_id": state,
-      "city_id": city,
-    });
-    if (response.statusCode == 200) {
-      print("${response.body}");
-      return response.statusCode;
-    } else {
-      print("${response.statusCode}");
-      return response.statusCode;
-    }
-  }
-
   Future<List<dynamic>?> getdata() async {
     var ans = await http.get(
-        Uri.parse("https://uat.redprix.com/api/customers/posts"),
-        headers: {});
+      Uri.parse(
+        "https://uat.redprix.com/api/customers/posts",
+      ),
+    );
     if (ans.statusCode == 200) {
       log("${ans.statusCode}");
       var body = ans.body;
@@ -63,6 +75,19 @@ class Apihelper {
     } else {
       log("${ans.statusCode}");
       return null;
+    }
+  }
+
+  Future verifyotp({required String email, required String number}) async {
+    http.Response response = await http.post(
+        Uri.parse("https://uat.redprix.com/api/verify-email"),
+        body: {"email": email, "email_otp": number});
+    if (response.statusCode == 200) {
+      log("${response.statusCode}");
+      return response.statusCode;
+    } else {
+      print("${response.statusCode}");
+      return response.statusCode;
     }
   }
 }
