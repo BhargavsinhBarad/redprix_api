@@ -93,6 +93,7 @@ class otp extends StatelessWidget {
                           onChanged: (val) {
                             num = val;
                           },
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
                             hintText: "Enter OTP",
                             border: OutlineInputBorder(),

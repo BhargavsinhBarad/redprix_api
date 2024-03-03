@@ -170,7 +170,7 @@ class _loginState extends State<login> {
                             Fluttertoast.showToast(
                               msg: "Login failed",
                             );
-                            log("error");
+                            log("$res");
                           }
                         },
                         child: Container(
