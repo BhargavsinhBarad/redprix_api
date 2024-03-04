@@ -12,10 +12,14 @@ class login extends StatefulWidget {
   State<login> createState() => _loginState();
 }
 
+final _formKey = GlobalKey<FormState>();
+
 class _loginState extends State<login> {
   bool pass = true;
   String? email;
   String? password;
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,157 +86,175 @@ class _loginState extends State<login> {
                       topRight: Radius.circular(30),
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Container(
-                          height: 180,
-                          child: Image.network(
-                              "https://img.freepik.com/free-vector/sign-concept-illustration_114360-125.jpg"),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(
-                          "Email Id",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: TextFormField(
-                          onChanged: (val) {
-                            email = val;
-                          },
-                          decoration: const InputDecoration(
-                            hintText: "Enter email id ",
-                            border: OutlineInputBorder(),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            height: 180,
+                            child: Image.network(
+                                "https://img.freepik.com/free-vector/sign-concept-illustration_114360-125.jpg"),
                           ),
                         ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(
-                          "Password",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: TextFormField(
-                          onChanged: (val) {
-                            password = val;
-                          },
-                          obscureText: pass,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  pass = !pass;
-                                });
-                              },
-                              icon: (pass == true)
-                                  ? const Icon(Icons.remove_red_eye_sharp)
-                                  : const Icon(Icons.remove_red_eye_outlined),
-                            ),
-                            hintText: "Enetr password",
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 20),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 20),
                           child: Text(
-                            "Forgot password?",
-                            style: TextStyle(color: Colors.blue),
+                            "Email Id",
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          var res = await Apihelper.apihelper
-                              .loginapi(email: email!, password: password!);
-
-                          if (res == 200) {
-                            Get.toNamed("/home");
-                            Get.snackbar("Login", "successfully");
-                            Fluttertoast.showToast(
-                              msg: "Login",
-                            );
-                          } else {
-                            Get.snackbar("Login", "failed");
-                            Fluttertoast.showToast(
-                              msg: "Login failed",
-                            );
-                            log("$res");
-                          }
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 20, right: 20),
-                          height: 50,
-                          width: Get.width,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                              child: Text(
-                            "Sign up",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Already member?",
-                              style: TextStyle(color: Colors.grey),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter email..";
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {
+                              email = val;
+                            },
+                            controller: emailcontroller,
+                            decoration: const InputDecoration(
+                              hintText: "Enter email id ",
+                              border: OutlineInputBorder(),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Get.toNamed("/");
-                              },
-                              child: const Text("Sign up",
-                                  style: TextStyle(color: Colors.blue)),
-                            )
-                          ],
+                          ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: 20,
-                            width: 20,
-                            child: Image.asset("assets/google.jpg"),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Text(
+                            "Password",
+                            style: TextStyle(color: Colors.grey),
                           ),
-                          Container(
-                            height: 20,
-                            width: 20,
-                            child: Image.asset("assets/facebook.png"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter password..";
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {
+                              password = val;
+                            },
+                            controller: passwordcontroller,
+                            obscureText: pass,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    pass = !pass;
+                                  });
+                                },
+                                icon: (pass == true)
+                                    ? const Icon(Icons.remove_red_eye_sharp)
+                                    : const Icon(Icons.remove_red_eye_outlined),
+                              ),
+                              hintText: "Enter password",
+                              border: const OutlineInputBorder(),
+                            ),
                           ),
-                          Container(
-                            height: 20,
-                            width: 20,
-                            child: Image.asset("assets/apple.png"),
+                        ),
+                        const Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 20),
+                            child: Text(
+                              "Forgot password?",
+                              style: TextStyle(color: Colors.blue),
+                            ),
                           ),
-                        ],
-                      )
-                    ],
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              var res = await Apihelper.apihelper
+                                  .loginapi(email: email!, password: password!);
+                              if (res == 200) {
+                                Get.offAllNamed("/home");
+                                Fluttertoast.showToast(
+                                  msg: "Login",
+                                );
+                                emailcontroller.clear();
+                                passwordcontroller.clear();
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: res,
+                                );
+                                log("$res");
+                              }
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 20, right: 20),
+                            height: 50,
+                            width: Get.width,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Center(
+                                child: Text(
+                              "Sign up",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Already member?",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Get.toNamed("/");
+                                },
+                                child: const Text("Sign up",
+                                    style: TextStyle(color: Colors.blue)),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Image.asset("assets/google.jpg"),
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Image.asset("assets/facebook.png"),
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Image.asset("assets/apple.png"),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],

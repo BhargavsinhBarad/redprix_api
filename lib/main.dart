@@ -25,7 +25,7 @@ void main() {
         ),
         GetPage(
           name: '/home',
-          page: () => home(),
+          page: () => const home(),
         ),
       ],
     ),

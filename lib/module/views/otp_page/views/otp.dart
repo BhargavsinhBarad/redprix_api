@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:redprix_api/module/utils/helper/api_helper.dart';
 
@@ -6,8 +9,10 @@ class otp extends StatelessWidget {
   otp({super.key});
 
   String? num;
+
   @override
   Widget build(BuildContext context) {
+    String data = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       body: Stack(
         children: [
@@ -73,18 +78,18 @@ class otp extends StatelessWidget {
                   child: Column(
                     children: [
                       Center(
-                        child: Container(
+                        child: SizedBox(
                           height: 250,
                           child: Image.network(
                               "https://cdni.iconscout.com/illustration/premium/thumb/otp-security-4120631-3427365.png"),
                         ),
                       ),
-                      Text(
+                      const Text(
                         "Verify Email",
                         style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Padding(
@@ -100,26 +105,41 @@ class otp extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      const Align(
+                      Align(
                         alignment: AlignmentDirectional.centerEnd,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 20),
-                          child: Text(
-                            "Resend",
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
+                            padding: const EdgeInsets.only(right: 20),
+                            child: TextButton(
+                              onPressed: () {
+                                Fluttertoast.showToast(
+                                  msg: "otp : ${Apihelper.apihelper.otpnum}",
+                                );
+                              },
+                              child: const Text(
+                                "Resend",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            )),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       GestureDetector(
                         onTap: () async {
-                          var res = await Apihelper.apihelper.verifyotp(
-                              email: "dilipsinh@gmail.com", number: num!);
+                          log(data);
+                          var res = await Apihelper.apihelper
+                              .verifyotp(email: data, number: num!);
+                          log("$res");
+                          if (res == 200) {
+                            Get.offAllNamed("/login");
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: "$res",
+                            );
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.only(left: 20, right: 20),
