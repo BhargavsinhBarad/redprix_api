@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:redprix_api/module/utils/helper/api_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class home extends StatelessWidget {
+class home extends StatefulWidget {
   const home({super.key});
 
   @override
+  State<home> createState() => _homeState();
+}
+
+class _homeState extends State<home> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: Column(
         children: [
           Container(
@@ -66,14 +72,21 @@ class home extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.all(5),
-                        height: 40,
-                        width: 40,
-                        child: const Image(
-                          image: AssetImage("assets/glass.png"),
-                          fit: BoxFit.cover,
+                      IconButton(
+                        onPressed: () async {
+                          var res = await Apihelper.apihelper.logoutapi();
+                          Fluttertoast.showToast(
+                            msg: res['message'],
+                          );
+                          SharedPreferences preferences =
+                              await SharedPreferences.getInstance();
+                          preferences.setBool("login", false);
+                          Get.toNamed("/");
+                        },
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                          size: 25,
                         ),
                       ),
                     ],
@@ -106,10 +119,22 @@ class home extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 25,
-                                    foregroundImage: NetworkImage(
-                                        "${data[i]['user']['profile_photo']}"),
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: (data[i]['user']
+                                                        ['profile_photo'] ==
+                                                    "")
+                                                ? const NetworkImage(
+                                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4mYGiDHOtUVcSxuzNfeds4xWXNOpQ-lIMPA&usqp=CAU",
+                                                  )
+                                                : NetworkImage(
+                                                    "${data[i]['user']['profile_photo']}",
+                                                  ),
+                                            fit: BoxFit.cover)),
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -119,34 +144,41 @@ class home extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text("${data[i]['user']['name']}"),
-                                      const Row(
+                                      Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          Icon(
+                                          const Icon(
                                             Icons.watch_later_outlined,
                                             color: Colors.blue,
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
-                                          Text(
+                                          const Text(
                                             "45 min",
                                             style:
                                                 TextStyle(color: Colors.grey),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Icon(
+                                          const Icon(
                                             Icons.location_on,
                                             color: Colors.red,
                                           ),
-                                          Text(
-                                            "Surat city",
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
+                                          (data[i]['city']['name'] == null)
+                                              ? const Text(
+                                                  "Surat",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  "${data[i]['city']['name']}",
+                                                  style: const TextStyle(
+                                                      color: Colors.grey),
+                                                ),
                                         ],
                                       ),
                                     ],
@@ -167,10 +199,13 @@ class home extends StatelessWidget {
                               SizedBox(
                                 height: Get.height * 0.35,
                                 width: Get.width,
-                                child: Image.network(
-                                  "${data[i]['images'][0]['image']}",
-                                  fit: BoxFit.cover,
-                                ),
+                                child: (data[i]['images'][0]['image'] == "")
+                                    ? Image.network(
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkg3xIvd5F5PdBNHq02XJTO4I35KlUDiyA2A&usqp=CAU")
+                                    : Image.network(
+                                        "${data[i]['images'][0]['image']}",
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                               const SizedBox(
                                 height: 10,

@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:redprix_api/module/utils/helper/api_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class login extends StatefulWidget {
   login({super.key});
@@ -15,6 +17,7 @@ class login extends StatefulWidget {
 final _formKey = GlobalKey<FormState>();
 
 class _loginState extends State<login> {
+  bool showSpinner = false;
   bool pass = true;
   String? email;
   String? password;
@@ -177,9 +180,18 @@ class _loginState extends State<login> {
                         GestureDetector(
                           onTap: () async {
                             if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                showSpinner = true;
+                              });
                               var res = await Apihelper.apihelper
                                   .loginapi(email: email!, password: password!);
                               if (res == 200) {
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                preferences.setBool("login", true);
                                 Get.offAllNamed("/home");
                                 Fluttertoast.showToast(
                                   msg: "Login",
@@ -187,6 +199,9 @@ class _loginState extends State<login> {
                                 emailcontroller.clear();
                                 passwordcontroller.clear();
                               } else {
+                                setState(() {
+                                  showSpinner = false;
+                                });
                                 Fluttertoast.showToast(
                                   msg: res,
                                 );
@@ -202,14 +217,20 @@ class _loginState extends State<login> {
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Center(
-                                child: Text(
-                              "Sign up",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            )),
+                            child: Center(
+                              child: (showSpinner == true)
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ))
+                                  : const Text(
+                                      "Login",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -227,8 +248,10 @@ class _loginState extends State<login> {
                                 onPressed: () {
                                   Get.toNamed("/");
                                 },
-                                child: const Text("Sign up",
-                                    style: TextStyle(color: Colors.blue)),
+                                child: const Text(
+                                  "Sign up",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
                               )
                             ],
                           ),

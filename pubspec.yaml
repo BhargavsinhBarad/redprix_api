@@ -39,6 +39,7 @@ dependencies:
   get:
   fluttertoast:
   modal_progress_hud_nsn:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

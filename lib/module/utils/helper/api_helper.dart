@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Apihelper {
   Apihelper._();
   static final Apihelper apihelper = Apihelper._();
-  String? token;
+
   String? otpnum;
 
   Future singupapi({
@@ -54,7 +55,9 @@ class Apihelper {
     if (response.statusCode == 200) {
       Map decodedata = jsonDecode(response.body);
       Map products = decodedata['data'];
-      token = products['authorization'];
+      // token = products['authorization'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', products['authorization']);
       return response.statusCode;
     } else {
       var ans = jsonDecode(response.body);
@@ -65,7 +68,9 @@ class Apihelper {
   }
 
   Future<List<dynamic>?> getdata() async {
-    log("$token");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    log(token);
 
     http.Response response = await http.get(
       Uri.parse(
@@ -105,6 +110,24 @@ class Apihelper {
       var mes = "${ans['message']}";
       print("${response.statusCode}");
       return mes;
+    }
+  }
+
+  logoutapi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    log(token);
+    http.Response response = await http
+        .get(Uri.parse("https://uat.redprix.com/api/logout"), headers: {
+      "Accept": "application/json",
+      "Authorization": "Bearer $token",
+    });
+    if (response.statusCode == 200) {
+      var ans = jsonDecode(response.body);
+      return ans;
+    } else {
+      var ans = jsonDecode(response.body);
+      return ans;
     }
   }
 }
